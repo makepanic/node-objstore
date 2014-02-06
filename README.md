@@ -3,6 +3,7 @@
 nodejs library for object caching
 
 ##TODO
+- Example
 - Documentation
 - Tests
 - Benchmark
@@ -14,6 +15,9 @@ nodejs library for object caching
 - store value via key
 - set expiration time for values
 - limit number of stored values
+
+##Example
+
 
 ##How
 
@@ -52,7 +56,7 @@ Function that clears the storage and stops all timeouts if `useTimeout` is enabl
 
 Function that returns the storage size.
 
-###`free( [amount] )`
+###`free( [amount=1] )`
 
 Function that removes a given amount of values from the storage.
 

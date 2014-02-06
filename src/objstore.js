@@ -1,4 +1,4 @@
-var _now = function(){ return Date.now(); },
+var _now = function(){ var now = process.hrtime(); return now[0]*1E9 + now[1] },
     // object that holds all values
     _store = {},
     // map that stores timestamps and key for all values
@@ -59,7 +59,7 @@ function find(key) {
     if (_store.hasOwnProperty(key)) {
         found = _store[key].val;
 
-        if (_now() - _store[key].now > _conf.expire) {
+        if (_now() - _store[key].now > _conf.expire * 1E6) {
             // value is expired, remove
             remove(key);
         }
@@ -70,7 +70,7 @@ function find(key) {
 /**
  * Frees a specified amount of values from the storage.
  * It removes the oldest stored values.
- * @param {number} [amount] number of values that needs to be freed
+ * @param {number} [amount=1] number of values that needs to be freed
  */
 function free(amount) {
     amount = amount || 1;
@@ -89,7 +89,7 @@ function free(amount) {
  * @returns {{val: *, now: number}} stored object
  */
 function store(key, value) {
-    if (size() > _conf.size) {
+    if (size() + 1 > _conf.size) {
         // remove oldest entries
         free(_conf.perFree);
     }
