@@ -1,4 +1,4 @@
-#node-objcache
+#node-objcache [![Build Status](https://travis-ci.org/makepanic/node-objstore.png?branch=develop)](https://travis-ci.org/makepanic/node-objstore)
 
 nodejs library for object caching
 
