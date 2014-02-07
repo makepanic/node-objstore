@@ -11,6 +11,8 @@ var _now = function(){ var now = process.hrtime(); return now[0] * 1E9 + now[1] 
         size: 1000,
         // time in milliseconds when values are expired
         expire: 60000,
+        // expire in ns
+        expireNs: 60000 * 1E6,
         // turns removing via setTimeout on or off
         useTimeout: false
     };
@@ -20,13 +22,18 @@ var _now = function(){ var now = process.hrtime(); return now[0] * 1E9 + now[1] 
  * @param {{perFree: number, size: number, expire: number, useTimeout: boolean}} conf
  */
 function config(conf) {
-    _conf = conf;
+    _conf.perFree = conf.hasOwnProperty('perFree') ? conf.perFree : 100;
+    _conf.size = conf.hasOwnProperty('size') ? conf.size : 1000;
+    _conf.expire = conf.hasOwnProperty('expire') ? conf.expire : 60000;
+    _conf.expireNs = _conf.expire * 1E6;
+    _conf.useTimeout = conf.hasOwnProperty('useTimeout') ? conf.useTimeout : false;
 }
 /**
  * Function that returns the storage size
  * @returns {number} storage size
  */
 function size() {
+    // TODO: expired values without timeout
     return Object.getOwnPropertyNames(_store).length;
 }
 
@@ -62,7 +69,7 @@ function find(key) {
     if (_store.hasOwnProperty(key)) {
         found = _store[key].val;
 
-        if (_now() - _store[key].now > _conf.expire * 1E6) {
+        if (_now() - _store[key].now > _conf.expireNs) {
             // value is expired, remove
             remove(key);
         }
