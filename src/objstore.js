@@ -1,10 +1,17 @@
-var _now = function(){ var now = process.hrtime(); return now[0] * 1E9 + now[1] },
+var events = require('events');
+var evEmitter = new events.EventEmitter(),
+    // function to return a unique now value
+    _now = function(){
+        var now = process.hrtime();
+        return now[0] * 1E9 + now[1]
+    },
     // object that holds all values
     _store = {},
     // map that stores timestamps and key for all values
     _expireMap = {},
     // method configurations
     _conf = {
+        topic: 'expired',
         // number of values that are freed
         perFree: 100,
         // maximum size of storage
@@ -12,49 +19,41 @@ var _now = function(){ var now = process.hrtime(); return now[0] * 1E9 + now[1] 
         // time in milliseconds when values are expired
         expire: 60000,
         // expire in ns
-        expireNs: 60000 * 1E6,
-        // turns removing via setTimeout on or off
-        useTimeout: false
+        expireNs: 60000 * 1E6
     };
+
 
 /**
  * Sets the storage configuration
- * @param {{perFree: number, size: number, expire: number, useTimeout: boolean}} conf
+ * @param {{perFree: number, size: number, expire: number}} conf
  */
 function config(conf) {
+    _conf.topic = conf.hasOwnProperty('topic') ? conf.topic : 'expired';
     _conf.perFree = conf.hasOwnProperty('perFree') ? conf.perFree : 100;
     _conf.size = conf.hasOwnProperty('size') ? conf.size : 1000;
     _conf.expire = conf.hasOwnProperty('expire') ? conf.expire : 60000;
     _conf.expireNs = _conf.expire * 1E6;
-    _conf.useTimeout = conf.hasOwnProperty('useTimeout') ? conf.useTimeout : false;
 }
 /**
  * Function that returns the storage size
  * @returns {number} storage size
  */
 function size() {
-    // TODO: expired values without timeout
     return Object.getOwnPropertyNames(_store).length;
 }
 
 /**
  * Removes a value using a key
  * @param {string} key identifier for value
- * @returns {*} removed value
  */
 function remove(key) {
-    // backup old stored value (or undefined)
-    var oldVal = _store[key];
     if (_store.hasOwnProperty(key)) {
-        // delete keys
+        // clear timeout
+        clearTimeout(_store[key].id);
+        // delete stored data
+        delete _expireMap[_store[key].now];
         delete _store[key];
-        delete _expireMap[oldVal.now];
-        if (_conf.useTimeout) {
-            clearTimeout(oldVal.id);
-        }
     }
-    // returned removed value
-    return oldVal ? oldVal.val : oldVal;
 }
 
 /**
@@ -63,18 +62,8 @@ function remove(key) {
  * @returns {*|undefined} result of value lookup
  */
 function find(key) {
-    var found;
-
     // check if store has key
-    if (_store.hasOwnProperty(key)) {
-        found = _store[key].val;
-
-        if (_now() - _store[key].now > _conf.expireNs) {
-            // value is expired, remove
-            remove(key);
-        }
-    }
-    return found;
+    return _store.hasOwnProperty(key) ? _store[key].val : undefined;
 }
 
 /**
@@ -85,59 +74,75 @@ function find(key) {
 function free(amount) {
     amount = amount || 1;
     // oldest items from expire map
-    var toFree = Object.keys(_expireMap).slice(0, amount);
-    toFree.forEach(function(timestamp){
+    Object.keys(_expireMap).slice(0, amount).forEach(function(timestamp){
         // remove each key
         remove(_expireMap[timestamp]);
     });
 }
 
 /**
+ * Function that expires a value using a key. Emits an event.
+ * @param {string} key
+ * @private
+ */
+function _expire(key) {
+    // emit event
+    evEmitter.emit(_conf.topic, key);
+    remove(key);
+}
+
+/**
  * Function that stores a value using a key
  * @param {string} key identifier for value
  * @param {*} value value that needs to be stored
- * @returns {{val: *, now: number}} stored object
+ * @param {number} [expires]
  */
-function store(key, value) {
-    if (size() + 1 > _conf.size) {
+function store(key, value, expires) {
+    expires = expires || _conf.expire;
 
-        // @if NODE_ENV == 'DEBUG'
-        console.log('store has to call free');
-        // @endif
-        // remove oldest entries
+    if (size() + 1 > _conf.size) {
+        // free storage
         free(_conf.perFree);
     }
 
-    // remove old stored value
-    remove(key);
+    if (_store.hasOwnProperty(key)) {
+        // already stored something
 
-    // store new value
-    _store[key] = {
-        val: value,
-        now: _now()
-    };
+        // remove expiredmap entry
+        delete _expireMap[_store[key].now];
 
-    if (_conf.useTimeout) {
-        // call remove with key in _conf.expire milliseconds
-        _store[key].id = setTimeout(remove.bind(null, key), _conf.expire);
+        // clear old timeout
+        clearTimeout(_store[key].id);
+
+        // remove old stored value
+        _store[key].val = value;
+        _store[key].now = _now();
+
+    } else {
+        // hasn't stored anything for key
+        // store new value
+        _store[key] = {
+            val: value,
+            now: _now()
+        };
     }
+
+    // call remove with key in _conf.expire milliseconds
+    _store[key].id = setTimeout(_expire.bind(null, key), expires);
 
     // add key to expired map
     _expireMap[_store[key].now] = key;
-
-    return _store[key];
 }
 
 /**
  * Function that clears the storage
  */
 function clear() {
-    if (_conf.useTimeout) {
-        // clear all timeouts
-        Object.keys(_store).forEach(function(key){
-            clearTimeout(_store[key].id);
-        });
-    }
+    // clear all timeouts
+    Object.keys(_store).forEach(function(key){
+        clearTimeout(_store[key].id);
+    });
+
     // reset store and expiremap
     _store = {};
     _expireMap = {};
@@ -151,7 +156,4 @@ exports.remove = remove;
 exports.clear = clear;
 exports.size = size;
 exports.free = free;
-
-// @if NODE_ENV == 'DEBUG'
-exports.bench = require('./benchmark');
-// @endif
+exports.on = evEmitter.on;

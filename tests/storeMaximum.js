@@ -5,8 +5,7 @@ module.exports = {
         objstore.config({
             perFree: 50,
             size: 100,
-            expire: 60000,
-            useTimeout: false
+            expire: 60000
         });
         callback();
     },

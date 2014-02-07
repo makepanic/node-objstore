@@ -3,6 +3,7 @@
 nodejs library for object caching
 
 ##TODO
+- implementation without setTimeout
 - Example
 - Documentation
 - Tests
@@ -38,11 +39,10 @@ Function that tries to find a key and returns the stored value.
 
 If the stored object is expired it is removed before returning the value.
 
-###`store( key, value )`
+###`store( key, value, [expires] )`
 
 Function that stores a value using a key.
-
-If `useTimeout` is enabled it calls `setTimeout` to automatically remove the value if it expires
+It calls `setTimeout` to automatically remove the value if it expires
 
 ###`remove( key )`
 
@@ -75,7 +75,3 @@ __Number__ The maximum amount of values that can be stored in the storage withou
 ####`expire` default: `60000`
 
 __Number__ Time in milliseconds until a value expires and is removed.
-
-####`useTimeout` default: `false`
-
-__Number__ Whether the `setTimeout` method is used to automatically remove an expired value

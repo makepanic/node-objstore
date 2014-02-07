@@ -3,8 +3,7 @@ var objstore = require('../src/objstore');
 module.exports = {
     setUp: function (callback) {
         objstore.config({
-            useTimeout: true,
-            expire: 1000
+            useTimeout: true
         });
         callback();
     },
@@ -15,14 +14,13 @@ module.exports = {
 
         test.equal(objstore.size(), 0, 'Store is empty');
 
-        objstore.store(KEY + 1, VALUE);
+        objstore.store(KEY + 1, VALUE, 100);
         test.equal(objstore.size(), 1, 'store has 1 item');
 
         setTimeout(function(){
             test.equal(objstore.size(), 0, 'store has 0 item');
             test.done();
-        }, 2000);
-
+        }, 200);
     },
 
     tearDown: function (callback) {
