@@ -33,4 +33,4 @@ The new array is used too loop through all timestamps and get the main storage k
 
 ##Documentation
 
-For the documentation see []()
+For the documentation see [makepanic.github.io/node-objstore/](http://makepanic.github.io/node-objstore/global.html)
