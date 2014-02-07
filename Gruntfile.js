@@ -13,7 +13,8 @@ module.exports = function(grunt) {
                 config: 'eslint.json'
             },
             target: [
-                'src/**/*.js'
+                'src/**/*.js',
+                'test/**/*.js'
             ]
         }
     });

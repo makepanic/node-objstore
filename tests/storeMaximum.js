@@ -24,7 +24,7 @@ module.exports = {
         for(var j = 0; j < 50; j++) {
             test.equal(objstore.find(KEY + j), undefined, 'old item ' + j + ' was freed')
         }
-        test.ok(objstore.find(KEY + 51), 'old item not in perFree exists')
+        test.ok(objstore.find(KEY + 51), 'old item not in perFree exists');
         test.equal(objstore.size(), 100, 'all object cleared');
         test.done();
     },

@@ -1,4 +1,4 @@
-var _now = function(){ var now = process.hrtime(); return now[0]*1E9 + now[1] },
+var _now = function(){ var now = process.hrtime(); return now[0] * 1E9 + now[1] },
     // object that holds all values
     _store = {},
     // map that stores timestamps and key for all values
