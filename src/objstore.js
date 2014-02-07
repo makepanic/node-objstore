@@ -42,9 +42,12 @@ function remove(key) {
         // delete keys
         delete _store[key];
         delete _expireMap[oldVal.now];
+        if (_conf.useTimeout) {
+            clearTimeout(oldVal.id);
+        }
     }
     // returned removed value
-    return oldVal.val;
+    return oldVal ? oldVal.val : oldVal;
 }
 
 /**
@@ -90,9 +93,16 @@ function free(amount) {
  */
 function store(key, value) {
     if (size() + 1 > _conf.size) {
+
+        // @if NODE_ENV == 'DEBUG'
+        console.log('store has to call free');
+        // @endif
         // remove oldest entries
         free(_conf.perFree);
     }
+
+    // remove old stored value
+    remove(key);
 
     // store new value
     _store[key] = {
@@ -134,3 +144,7 @@ exports.remove = remove;
 exports.clear = clear;
 exports.size = size;
 exports.free = free;
+
+// @if NODE_ENV == 'DEBUG'
+exports.bench = require('./benchmark');
+// @endif
