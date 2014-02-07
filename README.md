@@ -31,47 +31,6 @@ Using the `Object.keys` method an array is created that contains all timestamps.
 The `array.slice` method is used to cut a chunk of the sorted expiration map.
 The new array is used too loop through all timestamps and get the main storage keys to remove them.
 
-##methods
+##Documentation
 
-###`find( key )`
-
-Function that tries to find a key and returns the stored value.
-
-If the stored object is expired it is removed before returning the value.
-
-###`store( key, value, [expires] )`
-
-Function that stores a value using a key.
-It calls `setTimeout` to automatically remove the value if it expires
-
-###`remove( key )`
-
-Function that removes a stored value using a given key.
-
-###`clear()`
-
-Function that clears the storage and stops all timeouts if `useTimeout` is enabled.
-
-###`size()`
-
-Function that returns the storage size.
-
-###`free( [amount=1] )`
-
-Function that removes a given amount of values from the storage.
-
-###`config( config )`
-
-Calling `store.config()` sets the internal configuration.
-
-####`perFree` default: `100`
-
-__Number__ How many values are removed from the store if the `free` method is called.
-
-####`size` default: `1000`
-
-__Number__ The maximum amount of values that can be stored in the storage without automatically calling the `free` method.
-
-####`expire` default: `60000`
-
-__Number__ Time in milliseconds until a value expires and is removed.
+For the documentation see []()

@@ -148,6 +148,19 @@ function clear() {
     _expireMap = {};
 }
 
+/**
+ * Function to get all stored items
+ * @returns {Array} All stored items with value and key
+ */
+function all() {
+    return Object.keys(_store).map(function(key){
+        return {
+            value: _store[key].val,
+            key: key
+        };
+    });
+}
+
 // export functions
 exports.config = config;
 exports.find = find;
@@ -156,4 +169,5 @@ exports.remove = remove;
 exports.clear = clear;
 exports.size = size;
 exports.free = free;
+exports.all = all;
 exports.on = evEmitter.on;
