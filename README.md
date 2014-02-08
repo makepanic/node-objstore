@@ -17,8 +17,6 @@ nodejs library for object caching
 - set expiration time for values
 - limit number of stored values
 
-##Example
-
 ##How
 
 `Objcache` uses an object to store values under a given key. The stored value is wrapped in an object that contains a timestamp, an interval id and a the value.
@@ -35,3 +33,5 @@ The expiration is implemented using the `setTimeout` method.
 ##Documentation
 
 For the documentation see [makepanic.github.io/node-objstore/](http://makepanic.github.io/node-objstore/global.html)
+
+##Examples

@@ -1,5 +1,5 @@
-var events = require('events');
-var evEmitter = new events.EventEmitter(),
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter(),
     // function to return a unique now value
     _now = function(){
         var now = process.hrtime();
@@ -87,7 +87,7 @@ function free(amount) {
  */
 function _expire(key) {
     // emit event
-    evEmitter.emit(_conf.topic, key);
+    emitter.emit(_conf.topic, key);
     remove(key);
 }
 
@@ -170,4 +170,6 @@ exports.clear = clear;
 exports.size = size;
 exports.free = free;
 exports.all = all;
-exports.on = evEmitter.on;
+exports.on = function(topic, callback){
+    emitter.on(topic, callback);
+};
