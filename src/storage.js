@@ -166,6 +166,16 @@ var Storage = function(conf){
         });
     }
 
+    /**
+     * Function to register an listener for a specific topic
+     * @param {string} topic
+     * @param {function} callback Function that is called once the emitter emits a message under the topic
+     * @returns {*} emitter.on result
+     */
+    function on(topic, callback) {
+        return _emitter.on(topic, callback);
+    }
+
     // return public methods
     return {
         find: find,
@@ -175,9 +185,7 @@ var Storage = function(conf){
         size: size,
         free: free,
         all: all,
-        on: function(topic, callback){
-            return _emitter.on(topic, callback);
-        }
+        on: on
     }
 };
 
