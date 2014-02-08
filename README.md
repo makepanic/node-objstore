@@ -2,6 +2,10 @@
 
 nodejs library for object caching
 
+##NPM
+
+`npm install objstore --save `
+
 ##TODO
 
 - implementation without setTimeout
