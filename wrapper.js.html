@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Index</title>
+    <title>JSDoc: Source: wrapper.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,30 +17,40 @@
 
 <div id="main">
     
-    <h1 class="page-title">Index</h1>
+    <h1 class="page-title">Source: wrapper.js</h1>
     
     
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var Storage = require('./storage').Storage;
+var globalStorage;
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+/**
+ * Function to enable usage of one storage instance for all create calls
+ * @param {object} conf
+ */
+exports.global = function(conf){
+    globalStorage = new Storage(conf);
+};
+/**
+ * Function to disable the global option
+ */
+exports.local = function(){
+    globalStorage = null;
+};
+/**
+ * Function that creates a storage instance or returns the global instance
+ * @param {object} opts
+ * @returns {Storage}
+ */
+exports.create = function(opts){
+    return globalStorage ? globalStorage : new Storage(opts);
+};</code></pre>
+        </article>
+    </section>
 
 
 
