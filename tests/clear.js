@@ -1,7 +1,10 @@
-var objstore = require('../src/objstore');
+var Storage = require('../src/wrapper'),
+    store;
 
 module.exports = {
     setUp: function (callback) {
+        Storage.local();
+        store = Storage.create();
         callback();
     },
 
@@ -9,21 +12,21 @@ module.exports = {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
-        test.equal(objstore.size(), 0, 'Store is empty');
+        test.equal(store.size(), 0, 'Store is empty');
 
-        objstore.store(KEY + 1, VALUE);
-        objstore.store(KEY + 2, VALUE);
-        objstore.store(KEY + 3, VALUE);
-        test.equal(objstore.size(), 3, 'added 3 objects');
+        store.store(KEY + 1, VALUE);
+        store.store(KEY + 2, VALUE);
+        store.store(KEY + 3, VALUE);
+        test.equal(store.size(), 3, 'added 3 objects');
 
-        objstore.clear();
-        test.equal(objstore.size(), 0, 'all object cleared');
+        store.clear();
+        test.equal(store.size(), 0, 'all object cleared');
 
         test.done();
     },
 
     tearDown: function (callback) {
-        objstore.clear();
+        store.clear();
         callback();
     }
 };

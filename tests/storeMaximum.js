@@ -1,8 +1,10 @@
-var objstore = require('../src/objstore');
+var Storage = require('../src/wrapper'),
+    store;
 
 module.exports = {
     setUp: function (callback) {
-        objstore.config({
+        Storage.local();
+        store = Storage.create({
             perFree: 50,
             size: 100,
             expire: 60000
@@ -14,22 +16,22 @@ module.exports = {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
-        test.equal(objstore.size(), 0, 'Store is empty');
+        test.equal(store.size(), 0, 'Store is empty');
 
         for(var i = 0; i < 150; i++) {
-            objstore.store(KEY + i, VALUE);
+            store.store(KEY + i, VALUE);
         }
 
         for(var j = 0; j < 50; j++) {
-            test.equal(objstore.find(KEY + j), undefined, 'old item ' + j + ' was freed')
+            test.equal(store.find(KEY + j), undefined, 'old item ' + j + ' was freed')
         }
-        test.ok(objstore.find(KEY + 51), 'old item not in perFree exists');
-        test.equal(objstore.size(), 100, 'all object cleared');
+        test.ok(store.find(KEY + 51), 'old item not in perFree exists');
+        test.equal(store.size(), 100, 'all object cleared');
         test.done();
     },
 
     tearDown: function (callback) {
-        objstore.clear();
+        store.clear();
         callback();
     }
 };

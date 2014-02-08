@@ -1,29 +1,32 @@
-var objstore = require('../src/objstore'),
+var Storage = require('../src/wrapper'),
+    store,
     TOPIC = 'expired';
 
 module.exports = {
     setUp: function (callback) {
-        callback();
-        objstore.config({
+        Storage.local();
+        store = Storage.create({
             topic: TOPIC
         });
+        callback();
     },
 
     'tests store expired event': function(test) {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
-        test.equal(objstore.size(), 0, 'Store is empty');
-        objstore.on(TOPIC, function(key) {
-            test.equal(KEY, key, 'expired item is correct');
+        test.equal(store.size(), 0, 'Store is empty');
+        store.on(TOPIC, function(value) {
+            test.equal(KEY, value.key, 'expired key is correct');
+            test.equal(VALUE, value.value, 'expired value is correct');
             test.done();
         });
 
-        objstore.store(KEY, VALUE, 1000);
+        store.store(KEY, VALUE, 500);
     },
 
     tearDown: function (callback) {
-        objstore.clear();
+        store.clear();
         callback();
     }
 };

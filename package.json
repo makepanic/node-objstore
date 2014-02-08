@@ -1,8 +1,8 @@
 {
-  "name": "node-objstore",
+  "name": "objstore",
   "version": "0.0.1",
   "description": "nodejs library for object caching",
-  "main": "src/objstore.js",
+  "main": "src/wrapper.js",
   "scripts": {
     "test": "grunt test"
   },

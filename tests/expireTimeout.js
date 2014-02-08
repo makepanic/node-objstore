@@ -1,10 +1,10 @@
-var objstore = require('../src/objstore');
+var Storage = require('../src/wrapper'),
+    store;
 
 module.exports = {
     setUp: function (callback) {
-        objstore.config({
-            useTimeout: true
-        });
+        Storage.local();
+        store = Storage.create();
         callback();
     },
 
@@ -12,19 +12,19 @@ module.exports = {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
-        test.equal(objstore.size(), 0, 'Store is empty');
+        test.equal(store.size(), 0, 'Store is empty');
 
-        objstore.store(KEY + 1, VALUE, 100);
-        test.equal(objstore.size(), 1, 'store has 1 item');
+        store.store(KEY + 1, VALUE, 100);
+        test.equal(store.size(), 1, 'store has 1 item');
 
         setTimeout(function(){
-            test.equal(objstore.size(), 0, 'store has 0 item');
+            test.equal(store.size(), 0, 'store has 0 item');
             test.done();
         }, 200);
     },
 
     tearDown: function (callback) {
-        objstore.clear();
+        store.clear();
         callback();
     }
 };
