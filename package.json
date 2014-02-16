@@ -24,8 +24,10 @@
   "devDependencies": {
     "grunt": "~0.4.2",
     "load-grunt-tasks": "~0.3.0",
-    "grunt-contrib-nodeunit": "~0.3.0",
     "memwatch": "~0.2.2",
-    "grunt-eslint": "~0.3.2"
+    "grunt-eslint": "~0.3.2",
+    "shelljs": "~0.2.6",
+    "istanbul": "~0.2.4",
+    "nodeunit": "~0.8.5"
   }
 }
