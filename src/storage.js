@@ -2,8 +2,8 @@ var EventEmitter = require('events').EventEmitter;
 
 /**
  * Sets the storage configuration
- * @param {{perFree: number, size: number, expire: number}} conf
- * @returns {{find: find, store: store, remove: remove, clear: clear, size: size, free: free, all: all, on: on}}
+ * @param {{perFree: number, size: number, expire: number}} conf Storage configuration
+ * @returns {{find: find, store: store, remove: remove, clear: clear, size: size, free: free, all: all, on: on}} Storage Object
  * @constructor
  */
 var Storage = function(conf){
@@ -45,6 +45,7 @@ var Storage = function(conf){
     /**
      * Removes a value using a key
      * @param {string} key identifier for value
+     * @returns {void}
      */
     function remove(key) {
         if (_store.hasOwnProperty(key)) {
@@ -70,6 +71,7 @@ var Storage = function(conf){
      * Frees a specified amount of values from the storage.
      * It removes the oldest stored values.
      * @param {number} [amount=1] number of values that needs to be freed
+     * @returns {void}
      */
     function free(amount) {
         amount = amount || 1;
@@ -82,8 +84,9 @@ var Storage = function(conf){
 
     /**
      * Function that expires a value using a key. Emits an event.
-     * @param {string} key
+     * @param {string} key Storage value identifier
      * @private
+     * @returns {void}
      */
     function _expire(key) {
         if (_store.hasOwnProperty(key)){
@@ -100,7 +103,8 @@ var Storage = function(conf){
      * Function that stores a value using a key
      * @param {string} key identifier for value
      * @param {*} value value that needs to be stored
-     * @param {number} [expires]
+     * @param {number} [expires] Time in milliseconds until value expires
+     * @returns {void}
      */
     function store(key, value, expires) {
         expires = expires || _conf.expire;
@@ -141,6 +145,7 @@ var Storage = function(conf){
 
     /**
      * Function that clears the storage
+     * @returns {void}
      */
     function clear() {
         // clear all timeouts
@@ -168,8 +173,8 @@ var Storage = function(conf){
 
     /**
      * Function to register an listener for a specific topic
-     * @param {string} topic
-     * @param {function} callback Function that is called once the emitter emits a message under the topic
+     * @param {string} topic EventEmitter topic
+     * @param {function()} callback Function that is called once the emitter emits a message under the topic
      * @returns {*} emitter.on result
      */
     function on(topic, callback) {

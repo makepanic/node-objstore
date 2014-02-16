@@ -39,3 +39,10 @@ The expiration is implemented using the `setTimeout` method.
 For the documentation see [makepanic.github.io/node-objstore/](http://makepanic.github.io/node-objstore/global.html)
 
 ##Examples
+
+```
+var Storage = require('objstore');
+var myStorage = Storage.create();
+myStorage.store('foo', 'bar');
+myStorage.find('foo'); // bar
+```

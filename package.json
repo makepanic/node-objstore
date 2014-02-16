@@ -24,8 +24,8 @@
   "devDependencies": {
     "grunt": "~0.4.2",
     "load-grunt-tasks": "~0.3.0",
-    "grunt-eslint": "~0.2.0",
     "grunt-contrib-nodeunit": "~0.3.0",
-    "memwatch": "~0.2.2"
+    "memwatch": "~0.2.2",
+    "grunt-eslint": "~0.3.2"
   }
 }

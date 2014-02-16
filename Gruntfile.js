@@ -16,12 +16,24 @@ module.exports = function(grunt) {
                 'src/**/*.js',
                 'test/**/*.js'
             ]
+        },
+
+        istanbulNodeunit: {
+            all: {
+                foo: 'bar'
+            }
         }
     });
 
-    var tasks = ['eslint', 'nodeunit'];
+    var tasks = ['eslint', 'istanbulNodeunit'];
 
     grunt.registerTask('default', tasks);
     grunt.registerTask('test', tasks);
 
+    require('./tasks/istanbul-nodeunit')(grunt, {
+        statement: 99,
+        branch: 96,
+        function: 99,
+        lines: 99
+    });
 };
