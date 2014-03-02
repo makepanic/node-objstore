@@ -12,7 +12,7 @@ var Storage = function(conf){
     var // function to return a unique now value
         _now = function(){
             var now = process.hrtime();
-            return now[0] * 1E9 + now[1]
+            return now[0] * 1E9 + now[1];
         },
         // object that holds all values
         _store = {},
@@ -194,7 +194,7 @@ var Storage = function(conf){
         free: free,
         all: all,
         on: on
-    }
+    };
 };
 
 exports.Storage = Storage;
