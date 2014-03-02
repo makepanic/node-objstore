@@ -19,8 +19,10 @@ module.exports = {
 
         store1.store(KEY, VALUE);
 
+
         test.equal(store1.size(), 1, 'Store 1 is not empty');
         test.equal(store2.size(), 1, 'Store 2 is not empty');
+        test.equal(store1, store2, 'Store 1 equals Store 2');
 
         test.done();
     },

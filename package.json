@@ -1,6 +1,6 @@
 {
   "name": "objstore",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "nodejs library for object caching",
   "main": "src/wrapper.js",
   "scripts": {

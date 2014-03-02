@@ -136,8 +136,11 @@ var Storage = function(conf){
             };
         }
 
-        // call remove with key in _conf.expire milliseconds
-        _store[key].id = setTimeout(_expire.bind(null, key), expires);
+        // if expires is positive start timeout
+        if (expires > -1) {
+            // call remove with key in _conf.expire milliseconds
+            _store[key].id = setTimeout(_expire.bind(null, key), expires);
+        }
 
         // add key to expired map
         _expireMap[_store[key].now] = key;

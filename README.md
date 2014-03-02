@@ -1,10 +1,37 @@
-#node-objcache [![Build Status](https://travis-ci.org/makepanic/node-objstore.png?branch=develop)](https://travis-ci.org/makepanic/node-objstore)
+#node-objstore [![Build Status](https://travis-ci.org/makepanic/node-objstore.png?branch=develop)](https://travis-ci.org/makepanic/node-objstore)
 
 nodejs library for object caching
 
 ##NPM
 
-`npm install objstore --save `
+`npm install objstore --save`
+
+##Examples
+
+###Storing and accessing a value
+
+```js
+var Storage = require('objstore');
+var myStorage = Storage.create();
+
+// store myValue on foo
+myStorage.store('foo', myValue);
+
+// find at foo stored value
+myStorage.find('foo')
+```
+
+###Using global storage object
+```js
+var Storage = require('objstore');
+Storage.global();
+
+var store1 = Storage.create();
+var store2 = Storage.create();
+
+// store1 equals store2
+
+```
 
 ##TODO
 
@@ -37,12 +64,3 @@ The expiration is implemented using the `setTimeout` method.
 ##Documentation
 
 For the documentation see [makepanic.github.io/node-objstore/](http://makepanic.github.io/node-objstore/global.html)
-
-##Examples
-
-```
-var Storage = require('objstore');
-var myStorage = Storage.create();
-myStorage.store('foo', 'bar');
-myStorage.find('foo'); // bar
-```
