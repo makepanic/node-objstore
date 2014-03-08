@@ -21,6 +21,9 @@ module.exports = {
 
         store.free();
         test.equal(store.size(), 2, 'one object freed');
+        test.ok(!store.find(KEY + 1), 'first item removed');
+        test.ok(store.find(KEY + 2), 'has second item');
+        test.ok(store.find(KEY + 3), 'has third item');
 
         test.done();
     },

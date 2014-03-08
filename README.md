@@ -1,10 +1,29 @@
 #node-objstore [![Build Status](https://travis-ci.org/makepanic/node-objstore.png?branch=develop)](https://travis-ci.org/makepanic/node-objstore)
 
-nodejs library for object caching
+JavaScript library for storing objects.
 
 ##NPM
 
 `npm install objstore --save`
+
+##Configuration
+
+`Storage.create` accepts a configuration object:
+
+default values:
+
+```js
+Storage.create({
+    // remove 100 values if free is called or size is reached.
+    perFree: 100,
+    // storage can hold 1000 values
+    size: 1000,
+    // expire values after 60 secs
+    expire: 60000
+});
+```
+
+If `expire` equals -1 it will not automatically remove values.
 
 ##Examples
 
@@ -33,6 +52,26 @@ var store2 = Storage.create();
 
 ```
 
+##Methods
+
+__Storage__
+
+- `Storage.global(conf)` lets each `.create()` return the same instance.
+- `Storage.local()` lets each `.create()` return a new storage instance.
+- `Storage.create(conf)` creates a storage instance.
+    If `.local()` was called it will use `opts` to configure the new instance.
+
+__Storage.create() instance__
+
+- `find(key)` tries to find a stored value using the given key. If nothing is found it returns undefined
+- `store(key, value, expiresIn)` stores/updates a value using the given key. If `expiresIn` is negativ it won't expire values automatically.
+- `remove(key)` removes a value from the storage
+- `clear()` removes all values from teh storage
+- `size()` returns the number of stored values
+- `free(amount)` removes `amount` oldest values
+- `all()` returns an array with all stored values
+- `on(topic, callback)` subscribes to `topic` with a `callback`
+
 ##TODO
 
 - implementation without setTimeout
@@ -41,16 +80,9 @@ var store2 = Storage.create();
 - Benchmark
 - ES6 Map/Proxy
 
-##features
-
-- find value via key
-- store value via key
-- set expiration time for values
-- limit number of stored values
-
 ##How
 
-`Objcache` uses an object to store values under a given key. The stored value is wrapped in an object that contains a timestamp, an interval id and a the value.
+`objstore` uses an object to store values under a given key. The stored value is wrapped in an object that contains a timestamp, an interval id and a the value.
 
 To avoid too many stored objects there is an option to limit the amount of stored values.
 If the limit is reached or the `free` method is called, the oldest values are removed from the storage.
