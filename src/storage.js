@@ -14,6 +14,7 @@ var Storage = function(conf){
             var now = process.hrtime();
             return now[0] * 1E9 + now[1];
         },
+        _storeSizeCheck = true,
         // object that holds all values
         _store = {},
         // map that stores timestamps and key for all values
@@ -39,7 +40,7 @@ var Storage = function(conf){
      * @returns {number} storage size
      */
     function size() {
-        return Object.getOwnPropertyNames(_store).length;
+        return Object.keys(_store).length;
     }
 
     /**
@@ -48,7 +49,7 @@ var Storage = function(conf){
      * @returns {void}
      */
     function remove(key) {
-        if (_store.hasOwnProperty(key)) {
+        if (_store[key]) {
             // clear timeout
             clearTimeout(_store[key].id);
             // delete stored data
@@ -64,7 +65,7 @@ var Storage = function(conf){
      */
     function find(key) {
         // check if store has key
-        return _store.hasOwnProperty(key) ? _store[key].val : undefined;
+        return _store[key] ? _store[key].val : undefined;
     }
 
     /**
@@ -89,7 +90,7 @@ var Storage = function(conf){
      * @returns {void}
      */
     function _expire(key) {
-        if (_store.hasOwnProperty(key)){
+        if (_store[key]){
             // emit event
             _emitter.emit(_conf.topic, {
                 key: key,
@@ -97,6 +98,27 @@ var Storage = function(conf){
             });
             remove(key);
         }
+    }
+
+    /**
+     * Disables the size check before storing a value.
+     * @returns {void}
+     */
+    function beginStoreProperties(){
+        _storeSizeCheck = false;
+    }
+
+    /**
+     * Enables the size check before storing a value and calls free if size is greater than size.
+     * @returns {void}
+     */
+    function endStoreProperties(){
+        var _size = size();
+        if (_size > _conf.size) {
+            // free storage with perFree plus over size
+            free(_conf.perFree + _size - _conf.size);
+        }
+        _storeSizeCheck = true;
     }
 
     /**
@@ -109,12 +131,12 @@ var Storage = function(conf){
     function store(key, value, expires) {
         expires = expires || _conf.expire;
 
-        if (size() + 1 > _conf.size) {
+        if (_storeSizeCheck && size() + 1 > _conf.size) {
             // free storage
             free(_conf.perFree);
         }
 
-        if (_store.hasOwnProperty(key)) {
+        if (_store[key]) {
             // already stored something
 
             // remove expiredmap entry
@@ -139,7 +161,9 @@ var Storage = function(conf){
         // if expires is positive start timeout
         if (expires > -1) {
             // call remove with key in _conf.expire milliseconds
-            _store[key].id = setTimeout(_expire.bind(null, key), expires);
+            _store[key].id = setTimeout(function(){
+                _expire(key);
+            }, expires);
         }
 
         // add key to expired map
@@ -193,7 +217,9 @@ var Storage = function(conf){
         size: size,
         free: free,
         all: all,
-        on: on
+        on: on,
+        beginStoreProperties: beginStoreProperties,
+        endStoreProperties: endStoreProperties
     };
 };
 

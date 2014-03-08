@@ -71,6 +71,10 @@ __Storage.create() instance__
 - `free(amount)` removes `amount` oldest values
 - `all()` returns an array with all stored values
 - `on(topic, callback)` subscribes to `topic` with a `callback`
+- `beginStoreProperties()` to disable the size check before adding values.
+    This can be useful if you want to add multiple values to the store and handle the size after all of them are added.
+- `endStoreProperties()` to enable the size check before adding values.
+    This will also free if the size is greater than `config.size`.
 
 ##TODO
 

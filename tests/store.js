@@ -7,7 +7,7 @@ module.exports = {
         callback();
     },
 
-    'tests store method': function(test) {
+    'store method basic functionality': function(test) {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
@@ -22,7 +22,7 @@ module.exports = {
         test.done();
     },
 
-    'tests store method with the same key': function(test){
+    'store method with the same key': function(test){
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
@@ -37,7 +37,7 @@ module.exports = {
         test.done();
     },
 
-    'tests the store method with a set maximum size': function(test) {
+    'store method with a set maximum size': function(test) {
         var KEY = 'FIND_KEY',
             VALUE = 'waldo';
 
@@ -66,6 +66,31 @@ module.exports = {
 
         test.done();
 
+    },
+
+    'store method with begin/endStorProperties': function(test) {
+        var KEY = 'FIND_KEY',
+            VALUE = 'waldo';
+
+        store = Storage.create({
+            perFree: 1,
+            size: 2
+        });
+        test.equal(store.size(), 0, 'Store is empty');
+
+        store.beginStoreProperties();
+        store.store(KEY + 1, VALUE);
+        store.store(KEY + 2, VALUE);
+        store.endStoreProperties();
+        test.equal(store.size(), 2, 'added 2 objects without free');
+        store.beginStoreProperties();
+        store.store(KEY + 3, VALUE);
+        store.store(KEY + 4, VALUE);
+        store.store(KEY + 5, VALUE);
+        test.equal(store.size(), 5, 'added 5 objects without free');
+        store.endStoreProperties();
+        test.equal(store.size(), 1, 'freed oldest values');
+        test.done();
     },
 
     tearDown: function (callback) {
